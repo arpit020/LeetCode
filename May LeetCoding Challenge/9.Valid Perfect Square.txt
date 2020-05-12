@@ -1,0 +1,38 @@
+Valid Perfect Square
+Solution
+Given a positive integer num, write a function which returns True if num is a perfect square else False.
+
+Note: Do not use any built-in library function such as sqrt.
+
+Example 1:
+
+Input: 16
+Output: true
+Example 2:
+
+Input: 14
+Output: false
+
+Solution:
+class Solution {
+    public static boolean isPerfectSquare(int num) {
+        if (num < 0) return false;
+        if (num == 0) return true;
+
+       return is(num,1,num);
+    }
+
+    public static boolean is(int num,long start,long end){
+        if (start>end){
+            return false;
+        }
+        long mid=end+(start-end)/2;
+       if(mid*mid==num){
+           return true;
+       }
+       if(mid*mid>num){
+           return is(num,start,mid-1);
+       }
+       return is(num,mid+1,end);
+    }
+}

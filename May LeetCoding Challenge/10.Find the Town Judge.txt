@@ -1,0 +1,79 @@
+Find the Town Judge
+Solution
+In a town, there are N people labelled from 1 to N.  There is a rumor that one of these people is secretly the town judge.
+
+If the town judge exists, then:
+
+The town judge trusts nobody.
+Everybody (except for the town judge) trusts the town judge.
+There is exactly one person that satisfies properties 1 and 2.
+You are given trust, an array of pairs trust[i] = [a, b] representing that the person labelled a trusts the person labelled b.
+
+If the town judge exists and can be identified, return the label of the town judge.  Otherwise, return -1.
+
+Method1:
+class Solution {
+         public int findJudge(int N, int[][] trust) {
+            int matrix[][]=new int[N][N];
+            Stack<Integer> stack=new Stack<>();
+            for(int i=0;i<trust.length;i++){
+                matrix[trust[i][0]-1][trust[i][1]-1]=1;
+            }
+            for(int i=N-1;i>=0;i--){
+                stack.push(i);
+            }
+
+            while (stack.size()>1){
+                int x1=stack.pop();
+                int x2=stack.pop();
+                if(knows(x1,x2,matrix)){
+                    stack.push(x2);
+                }else {
+                    stack.push(x1);
+                }
+            }
+
+            int ans=stack.pop();
+            for(int i=0;i<N;i++){
+                if(i!=ans && (knows(ans,i,matrix) || !knows(i,ans,matrix))){
+                    return -1;
+                }
+            }
+            return ans+1;
+
+        }
+
+        boolean knows(int A,int B,int matrix[][]){
+
+            if(matrix[A][B]==1){
+                return true;
+            }
+            return false;
+        }
+}
+
+Method2:
+class Solution {
+    public int findJudge(int N, int[][] trust) 
+	{
+    	int[] count = new int[N];
+        int[] trusted = new int[N]; 
+        
+        for(int i = 0; i < trust.length; i++)
+        {
+            int a = trust[i][0]; 
+            int b = trust[i][1];
+            count[a - 1]++;
+            trusted[b - 1]++;
+        }
+        
+        for(int i = 0; i < N; i++)
+        {
+            if(count[i] == 0 && trusted[i] == N - 1)
+            {
+                return i + 1;
+            }    
+        }
+        return -1;
+	}
+}
