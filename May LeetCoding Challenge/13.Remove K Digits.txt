@@ -1,0 +1,167 @@
+Remove K Digits
+Solution
+Given a non-negative integer num represented as a string, remove k digits from the number so that the new number is the smallest possible.
+
+Note:
+The length of num is less than 10002 and will be = k.
+The given num does not contain any leading zero.
+Example 1:
+
+Input: num = "1432219", k = 3
+Output: "1219"
+Explanation: Remove the three digits 4, 3, and 2 to form the new number 1219 which is the smallest.
+Example 2:
+
+Input: num = "10200", k = 1
+Output: "200"
+Explanation: Remove the leading 1 and the number is 200. Note that the output must not contain leading zeroes.
+Example 3:
+
+Input: num = "10", k = 2
+Output: "0"
+Explanation: Remove all the digits from the number and it is left with nothing which is 0.
+Best Solution:
+class Solution {
+	public String removeKdigits(String num, int k) {
+		int start = 0;
+		int index_zero;
+		while(true) {
+			index_zero=num.indexOf('0', start);
+			if(index_zero==-1||k<index_zero-start)
+				break;
+			else {
+				k-=index_zero-start;
+			}
+			start = index_zero;
+			while (start<num.length()&&num.charAt(start)=='0') {
+				start++;
+			}
+		}
+		if(start==num.length())
+			return "0";
+		if(k==0) {
+			return num.substring(start);
+		}
+		if(index_zero==-1)
+			index_zero = num.length();
+		LinkedList<Character> chrs = new LinkedList<>();
+		chrs.add(num.charAt(start));
+		int deletedC = 0;
+		int i = start+1;
+		for (; deletedC<k&&i<index_zero; i++) {
+			Character ref = chrs.peekLast();
+			char c = num.charAt(i);
+			while(!chrs.isEmpty()&&ref>c&&deletedC<k) {
+				deletedC++;
+				chrs.pollLast();
+				ref = chrs.peekLast();
+			}
+			chrs.add(c);
+		}
+		
+		while (deletedC<k) {
+			deletedC++;
+			chrs.pollLast();
+		}
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		while(!chrs.isEmpty()) {
+			stringBuilder.append(chrs.pollFirst());
+		}
+		stringBuilder.append(num.substring(i));
+		if(stringBuilder.length()==0)
+			stringBuilder.append(0);
+		return stringBuilder.toString();
+    }
+}
+
+2nd Best:
+class Solution {
+    public String removeKdigits(String num, int k) {
+        
+        // Add Character to stack if stack top element is greater than current element pop from stack 
+        // Pop from stack until k = 0 
+        
+        int len = num.length(); 
+
+        if(len <= k) return "0" ;             
+        
+        // Remove prefixed zero 
+        
+        // Return the string 
+                
+        
+        Stack<Character> stack = new Stack<>();
+        int i = 0; 
+                
+        while(i<len){
+ 
+            // Continue to pop from stack 
+            //System.out.println("Stack -- " + stack);
+            while(i < len && k > 0 && !stack.isEmpty() && stack.peek() > num.charAt(i)) {
+                stack.pop(); 
+                k--;                 
+            }            
+            stack.push(num.charAt(i++));             
+        }
+        
+        
+        //System.out.println(stack); 
+        
+        // Cases like 11111         
+        while(k>0){
+            stack.pop(); k--; 
+        }
+        
+        // Remove zeroes from begining 
+        
+        StringBuilder result = new StringBuilder(); 
+        
+        while(!stack.isEmpty()){
+            result.append(stack.pop()); 
+        }        
+        
+        result.reverse(); 
+        // Remove 
+        i = 0 ; 
+        while( result.length() > 0 && result.charAt(0) == '0'){
+            result.deleteCharAt(0); 
+        }
+                
+        return (result.length() == 0) ? "0" : result.toString(); 
+        
+    }
+}
+
+My solution:
+class Solution {
+    public String removeKdigits(String num, int k) {
+        if(num.length()<=k){
+            return "0";
+        }
+        int i=0;
+        while (k>0){
+            i=(i>0)? (i-1):0;
+            while (i<num.length()-1 && num.charAt(i)<=num.charAt(i+1))
+                i++;
+
+            num=num.substring(0,i)+num.substring(i+1);
+            k--;
+        }
+
+        int j=0;
+        while (j<num.length() && num.charAt(j)=='0'){
+            j++;
+        }
+
+        if(j>0){
+            num=num.substring(j);
+        }
+        if(num.length()==0){
+            return "0";
+        }
+        return num;
+        
+    }
+}
+

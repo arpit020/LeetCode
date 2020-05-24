@@ -1,0 +1,92 @@
+
+
+Sort Characters By Frequency
+Solution
+Given a string, sort it in decreasing order based on the frequency of characters.
+
+Example 1:
+
+Input:
+"tree"
+
+Output:
+"eert"
+Explanation:
+'e' appears twice while 'r' and 't' both appear once.
+So 'e' must appear before both 'r' and 't'. Therefore "eetr" is also a valid answer.
+Example 2:
+Input:
+"cccaaa"
+Output:
+"cccaaa"
+Explanation:
+Both 'c' and 'a' appear three times, so "aaaccc" is also a valid answer.
+Note that "cacaca" is incorrect, as the same characters must be together.
+Example 3:
+Input:
+"Aabb"
+Output:
+"bbAa"
+Explanation:
+"bbaA" is also a valid answer, but "Aabb" is incorrect.
+Note that 'A' and 'a' are treated as two different characters.
+Solution:
+1.
+class Solution {
+    public String frequencySort(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        for (char c : s.toCharArray()) 
+            map.put(c, map.getOrDefault(c, 0) + 1);
+						
+        List<Character> [] bucket = new List[s.length() + 1];
+        for (char key : map.keySet()) {
+            int frequency = map.get(key);
+            if (bucket[frequency] == null) bucket[frequency] = new ArrayList<>();
+            bucket[frequency].add(key);
+        }
+				
+        StringBuilder sb = new StringBuilder();
+        for (int pos = bucket.length - 1; pos >= 0; pos--)
+            if (bucket[pos] != null)
+                for (char c : bucket[pos])
+                    for (int i = 0; i < map.get(c); i++)
+                        sb.append(c);
+
+        return sb.toString();
+    }
+}
+
+2.
+class Solution {
+      public   String frequencySort(String s) {
+        char c[]=s.toCharArray();
+        HashMap<Character,Integer> map=new HashMap<>();
+        ArrayList<Character> cx=new ArrayList<>();
+        for(char cc:c){
+            cx.add(cc);
+            map.put(cc,map.getOrDefault(cc,0)+1);
+        }
+        comparator comp=new comparator(map);
+        Collections.sort(cx,comp);
+        for(int i=0;i<cx.size();i++){
+            c[i]=cx.get(i);
+        }
+        return new String(c);
+    }
+
+    class comparator implements Comparator<Character>{
+        HashMap<Character,Integer> map;
+        comparator(HashMap<Character,Integer> map){
+            this.map=map;
+        }
+
+        public int compare(Character c1,Character c2){
+            int freq=map.get(c2).compareTo(map.get(c1));
+            int val=c1.compareTo(c2);
+            if(freq==0){
+                return val;
+            }
+            return freq;
+        }
+    }
+}
